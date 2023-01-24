@@ -34,24 +34,9 @@
             android:textSize="20sp"
             android:text="NOMBRE" />
 
-        <TextView
-            android:id="@+id/edadUsuario"
-            android:textColor="@color/purple_200"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="EDAD"/>
 
         <TextView
-            android:id="@+id/pesoUsuario"
-            android:textColor="@color/purple_200"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="Desde 17/03/2017" />
-
-        <TextView
-            android:id="@+id/fechaUsuario"
+            android:id="@+id/companiaUsuario"
             android:textColor="@color/purple_200"
             android:layout_width="wrap_content"
             android:textSize="20sp"
@@ -67,25 +52,28 @@
             <Button
                 android:id="@+id/btnEditarUsuario"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:textColor="@color/purple_500"
-                android:textSize="16sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="1dp"
-                android:text="Editar usuario" />
+                android:layout_weight="1"
+                android:text="Editar usuario"
+                android:textColor="@color/purple_500"
+                android:textSize="16sp"
+                card_view:icon="@android:drawable/ic_menu_edit"
+                card_view:iconTint="#000000" />
 
             <Button
                 android:id="@+id/btnEliminarUsuario"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:text="Eliminar Usuario"
                 android:textColor="@color/purple_500"
                 android:textSize="16sp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_margin="1dp"
-                android:layout_height="wrap_content"
-                android:text="Eliminar Usuario"
-                />
+                card_view:icon="@android:drawable/ic_menu_delete"
+                card_view:iconTint="#000000" />
         </LinearLayout>
 
     </LinearLayout>

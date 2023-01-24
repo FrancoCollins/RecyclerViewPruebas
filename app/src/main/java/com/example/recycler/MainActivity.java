@@ -4,21 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.example.recycler.adaptadores.AdaptadorUsuarioPersonalizado;
-import com.example.recycler.entidad.Usuario;
-import com.example.recycler.listaSingleton.ListaUsuarioSingleton;
+import com.example.recycler.adaptadores.AdaptadorSuperHeroePersonalizado;
+import com.example.recycler.entidad.SuperHeroe;
+import com.example.recycler.listaSingleton.ListaSingleton;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView reyclerViewUser;
-    private AdaptadorUsuarioPersonalizado adaptadorUsuario;
+    private AdaptadorSuperHeroePersonalizado adaptadorUsuario;
     private Button botonSegunda;
 
 
@@ -38,16 +39,15 @@ public class MainActivity extends AppCompatActivity {
         reyclerViewUser.setLayoutManager(new LinearLayoutManager(this));
 
         // Asociamos un adapter (ver más adelante cómo definirlo)
-        ListaUsuarioSingleton.getInstance().inicializar();
-        List<Usuario> listaUsuario = ListaUsuarioSingleton.getInstance().getListaSuperHeroes();
-        adaptadorUsuario = new AdaptadorUsuarioPersonalizado(listaUsuario);
+        List<SuperHeroe> listaSuperHeroes = ListaSingleton.getInstance().getListaSuperHeroes();
+        adaptadorUsuario = new AdaptadorSuperHeroePersonalizado(listaSuperHeroes);
         Context context = getApplicationContext();
         adaptadorUsuario.setContext(context);
         reyclerViewUser.setAdapter(adaptadorUsuario);
 
         botonSegunda.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Formulario.class);
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         });
 
     }

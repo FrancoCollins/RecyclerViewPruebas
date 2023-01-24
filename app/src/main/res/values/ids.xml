@@ -6,4 +6,9 @@
     <item name="btnButton4" type="id" />
     <item name="btnButton5" type="id" />
     <item name="btnButton6" type="id" />
+    <item name="nombre" type="id" />
+    <item name="compania" type="id" />
+    <item name="spinner" type="id" />
+
+
 </resources>
