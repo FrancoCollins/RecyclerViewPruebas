@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recycler.Formulario;
 import com.example.recycler.R;
-import com.example.recycler.entidad.SuperHeroe;
+import com.example.recycler.entidad.Contacto;
 
 import com.example.recycler.listaSingleton.ListaSingleton;
 
@@ -22,11 +21,11 @@ import java.util.List;
 
 public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<AdaptadorSuperHeroePersonalizado.ViewHolder> {
 
-   private List<SuperHeroe> listaSuperHeroe;
+   private List<Contacto> listaContacto;
    public static Context context;
 
-   public AdaptadorSuperHeroePersonalizado(List<SuperHeroe> listaSuperHeroe) {
-       this.listaSuperHeroe = listaSuperHeroe;
+   public AdaptadorSuperHeroePersonalizado(List<Contacto> listaContacto) {
+       this.listaContacto = listaContacto;
    }
 
     public void setContext(Context mainActivityClass) {
@@ -65,14 +64,13 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
    //será quien se encargue de establecer los objetos en el ViewHolder
    @Override
    public void onBindViewHolder(ViewHolder holder, int position) {
-       String sId = String.valueOf(listaSuperHeroe.get(position).getId());
+       String sId = String.valueOf(listaContacto.get(position).getId());
        holder.id.setText(sId);
-       holder.nombre.setText(listaSuperHeroe.get(position).getNombre());
-       holder.compania.setText(listaSuperHeroe.get(position).getCompania());
-       holder.background.setBackgroundColor(listaSuperHeroe.get(position).getColor());
+       holder.nombre.setText(listaContacto.get(position).getNombre());
+       holder.compania.setText(listaContacto.get(position).getTelefono());
+       holder.background.setBackgroundColor(listaContacto.get(position).getColor());
 
        holder.botonEditar.setOnClickListener(view -> {
-           Toast.makeText(holder.id.getContext(), "Editando usuario " + sId, Toast.LENGTH_SHORT).show();
            Intent intent = new Intent(context, Formulario.class);
 
            intent.putExtra("SuperHeroe",ListaSingleton.getInstance().getListaSuperHeroes().get(position));
@@ -80,8 +78,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
        });
 
        holder.botonEliminar.setOnClickListener(view -> {
-           Toast.makeText(holder.id.getContext(), "Eliminando usuario " + sId, Toast.LENGTH_SHORT).show();
-           ListaSingleton.getInstance().borrar(listaSuperHeroe.get(position));
+           ListaSingleton.getInstance().borrar(listaContacto.get(position));
            notifyDataSetChanged();
        });
    }
@@ -89,7 +86,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
    //será quien devuelva la cantidad de items que se encuentra en la lista
    @Override
    public int getItemCount() {
-       return listaSuperHeroe.size();
+       return listaContacto.size();
    }
 
 }

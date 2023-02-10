@@ -1,6 +1,6 @@
 package com.example.recycler.listaSingleton;
 
-import com.example.recycler.entidad.SuperHeroe;
+import com.example.recycler.entidad.Contacto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class ListaSingleton {
 
     private static ListaSingleton instance;
-    private List<SuperHeroe> listaSuperHeroes;
+    private List<Contacto> listaSuperHeroes;
 
     private ListaSingleton() {
         super();
@@ -23,11 +23,11 @@ public class ListaSingleton {
     }
 
 
-    public List<SuperHeroe> getListaSuperHeroes() {
+    public List<Contacto> getListaSuperHeroes() {
         return listaSuperHeroes;
     }
 
-    public void borrar(SuperHeroe superHeroe) {
-        listaSuperHeroes.remove(superHeroe);
+    public void borrar(Contacto contacto) {
+        listaSuperHeroes.remove(contacto);
     }
 }

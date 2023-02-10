@@ -4,13 +4,13 @@ import com.example.recycler.listaSingleton.ListaSingleton;
 
 import java.io.Serializable;
 
-public class SuperHeroe implements Serializable {
+public class Contacto implements Serializable {
     private int id;
     private String nombre;
-    private String compania;
+    private String telefono;
     private int color;
 
-    public SuperHeroe() {
+    public Contacto() {
         if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
             this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
         }
@@ -33,12 +33,12 @@ public class SuperHeroe implements Serializable {
     }
 
 
-    public String getCompania() {
-        return compania;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setCompania(String fechaNacimiento) {
-        this.compania = fechaNacimiento;
+    public void setTelefono(String fechaNacimiento) {
+        this.telefono = fechaNacimiento;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SuperHeroe implements Serializable {
         return "Usuario{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", fechaNacimiento='" + compania + '\'' +
+                ", fechaNacimiento='" + telefono + '\'' +
                 '}';
     }
 

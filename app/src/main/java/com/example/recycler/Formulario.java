@@ -1,10 +1,15 @@
 package com.example.recycler;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.app.ActivityOptions;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,9 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.example.recycler.entidad.SuperHeroe;
+import com.example.recycler.entidad.Contacto;
 import com.example.recycler.listaSingleton.ListaSingleton;
 
 public class Formulario extends AppCompatActivity {
@@ -23,16 +28,19 @@ public class Formulario extends AppCompatActivity {
     private EditText compania;
     private Button aceptar;
     private Button cancelar;
-    private SuperHeroe superHeroe;
+    private Contacto contacto;
     private boolean editar;
     private Spinner spinner;
+    private TextView titulo;
 
     private boolean comprobacionInicial() {
-        SuperHeroe superHeroe = (SuperHeroe) getIntent().getSerializableExtra("SuperHeroe");
-        if (superHeroe == null)
+        Contacto contacto = (Contacto) getIntent().getSerializableExtra("SuperHeroe");
+        if (contacto == null) {
+            titulo = findViewById(R.id.textView);
+            titulo.setText(R.string.crear_usuario);
             return false;
-        else
-            this.superHeroe = superHeroe;
+        } else
+            this.contacto = contacto;
         return true;
     }
 
@@ -42,13 +50,13 @@ public class Formulario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         spinner = findViewById(R.id.spinner);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(adapterView.getContext(), (String) adapterView.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+                // vacio
             }
 
             @Override
@@ -63,58 +71,95 @@ public class Formulario extends AppCompatActivity {
         nombre = findViewById(R.id.nombre);
         editar = comprobacionInicial();
         if (editar) {
-            nombre.setText(superHeroe.getNombre());
-            compania.setText(superHeroe.getCompania());
+            nombre.setText(contacto.getNombre());
+            compania.setText(contacto.getTelefono());
         }
 
         aceptar.setOnClickListener(view -> {
-            if (editar) {
-                superHeroe.setCompania(String.valueOf(compania.getText()));
-                superHeroe.setNombre(String.valueOf(nombre.getText()));
-                switch (spinner.getSelectedItem().toString()) {
-                    case "ROJO":
-                        superHeroe.setColor(Color.RED);
-                        break;
-                    case "AZUL":
-                        superHeroe.setColor(Color.BLUE);
-                        break;
-                    case "VERDE":
-                        superHeroe.setColor(Color.GREEN);
-                        break;
-                    case "AMARILLO":
-                        superHeroe.setColor(Color.YELLOW);
-                        break;
-                }
-                Toast.makeText(this, "Superheroe con id; " + superHeroe.getId() + " editado correctamente", Toast.LENGTH_LONG).show();
-            } else {
-                superHeroe = new SuperHeroe();
-                superHeroe.setNombre(String.valueOf(nombre.getText()));
-                superHeroe.setCompania(String.valueOf(compania.getText()));
-                switch (spinner.getSelectedItem().toString()) {
-                    case "ROJO":
-                        superHeroe.setColor(Color.RED);
-                        break;
-                    case "AZUL":
-                        superHeroe.setColor(Color.BLUE);
-                        break;
-                    case "VERDE":
-                        superHeroe.setColor(Color.GREEN);
-                        break;
-                    case "AMARILLO":
-                        superHeroe.setColor(Color.YELLOW);
-                        break;
-                }
-                ListaSingleton.getInstance().getListaSuperHeroes().add(superHeroe);
-                Toast.makeText(this, "Superheroe con id " + superHeroe.getId() + "inscrito correcta", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle() );
+            if (nombre.getText().toString().length() > 0 && compania.getText().toString().length() > 0) {
+                if (editar) {
+                    contacto.setTelefono(String.valueOf(compania.getText()));
+                    contacto.setNombre(String.valueOf(nombre.getText()));
+                    switch (spinner.getSelectedItem().toString()) {
+                        case "ROJO":
+                            contacto.setColor(Color.RED);
+                            break;
+                        case "AZUL":
+                            contacto.setColor(Color.BLUE);
+                            break;
+                        case "VERDE":
+                            contacto.setColor(Color.GREEN);
+                            break;
+                        case "AMARILLO":
+                            contacto.setColor(Color.YELLOW);
+                            break;
+                    }
+                } else {
+                    contacto = new Contacto();
+                    contacto.setNombre(String.valueOf(nombre.getText()));
+                    contacto.setTelefono(String.valueOf(compania.getText()));
+                    switch (spinner.getSelectedItem().toString()) {
+                        case "ROJO":
+                            contacto.setColor(Color.RED);
+                            break;
+                        case "AZUL":
+                            contacto.setColor(Color.BLUE);
+                            break;
+                        case "VERDE":
+                            contacto.setColor(Color.GREEN);
+                            break;
+                        case "AMARILLO":
+                            contacto.setColor(Color.YELLOW);
+                            break;
+                    }
+                    ListaSingleton.getInstance().getListaSuperHeroes().add(contacto);
+                    createNotificationChannel();
+                    enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 
+                }
+            }else if (nombre.getText().toString().length() == 0) {
+                createNotificationChannel();
+                enviarNotificacion("Datos incompletos", "Por favor rellene el nombre del contacto");
+            }else if (compania.getText().toString().length() == 0){
+                createNotificationChannel();
+                enviarNotificacion("Datos incompletos", "Por favor rellene el numero del contacto");
             }
         });
         cancelar.setOnClickListener(view -> {
             Intent intent = new Intent(this, MainActivity.class);
-            Toast.makeText(this, "VOLVER", Toast.LENGTH_LONG).show();
-            startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         });
     }
+
+    private void createNotificationChannel() {
+        //Preguntando si la version es superior a la 26
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("1234", "CanalNotificacion", importance);
+            channel.setDescription("Canal de prueba");
+            // Registramos el canal en el sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void enviarNotificacion(String titulo, String mensaje) {
+        //Pedimos el canal creado anteriormente
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1234")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle(titulo)
+                .setContentText(mensaje)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        NotificationManagerCompat notificationManagerCompact =
+                NotificationManagerCompat.from(this);
+
+        // Notificacion id deberia de ser unico por cada notificacion
+        int notificationId = 1;
+        //Enviakmos la notificacion
+        notificationManagerCompact.notify(notificationId, builder.build());
+    }
+
 }
