@@ -1,20 +1,19 @@
 package com.example.recycler;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityOptions;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.example.recycler.adaptadores.AdaptadorSuperHeroePersonalizado;
 import com.example.recycler.entidad.Contacto;
@@ -27,15 +26,49 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView reyclerViewUser;
     private AdaptadorSuperHeroePersonalizado adaptadorUsuario;
     private Button botonSegunda;
-
+    private View mainLayout;
+    private Button salir;
+    private Spinner spinner;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        salir = findViewById(R.id.salir);
+        mainLayout = findViewById(R.id.mainLayout);
+        spinner = findViewById(R.id.spinner2);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                switch (spinner.getSelectedItem().toString()) {
+                    case "ROJO":
+                        mainLayout.setBackgroundColor(Color.RED);
+                        break;
+                    case "AZUL":
+                        mainLayout.setBackgroundColor(Color.BLUE);
+                        break;
+                    case "VERDE":
+                        mainLayout.setBackgroundColor(Color.GREEN);
+                        break;
+                    case "AMARILLO":
+                        mainLayout.setBackgroundColor(Color.YELLOW);
+                        break;
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // vacio
 
+            }
+        });
+
+        salir.setOnClickListener(view -> {
+            System.exit(0);
+        });
         reyclerViewUser = findViewById(R.id.rViewUsuario);
         botonSegunda = findViewById((R.id.segunda));
 
@@ -61,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();

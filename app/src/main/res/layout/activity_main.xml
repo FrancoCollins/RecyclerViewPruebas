@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -11,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mis contactos"
-        android:textSize="24sp"
         android:textColor="@color/design_default_color_primary"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -23,11 +24,23 @@
         android:id="@+id/rViewUsuario"
         android:layout_width="355dp"
         android:layout_height="337dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.444" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/salir"
+        android:layout_width="264dp"
+        android:layout_height="39dp"
+        android:text="Salir de la app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
+        app:layout_constraintVertical_bias="0.732" />
 
     <Button
         android:id="@+id/segunda"
@@ -36,9 +49,39 @@
         android:text="Añadir contacto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
-        app:layout_constraintVertical_bias="0.754" />
+        app:layout_constraintVertical_bias="0.522" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="333dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="73dp"
+        android:layout_marginBottom="53dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/segunda"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="257dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="56dp"
+        android:background="@color/black"
+        android:padding="10sp"
+        android:text="Seleccione color de fondo:"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

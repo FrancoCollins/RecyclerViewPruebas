@@ -9,6 +9,9 @@
     <item name="nombre" type="id" />
     <item name="compania" type="id" />
     <item name="spinner" type="id" />
+    <item name="spinner2" type="id" />
+    <item name="segunda" type="id" />
+
 
 
 </resources>
