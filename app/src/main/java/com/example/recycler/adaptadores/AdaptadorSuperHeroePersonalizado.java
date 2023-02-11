@@ -72,7 +72,6 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
 
        holder.botonEditar.setOnClickListener(view -> {
            Intent intent = new Intent(context, Formulario.class);
-
            intent.putExtra("SuperHeroe",ListaSingleton.getInstance().getListaSuperHeroes().get(position));
            context.startActivity(intent);
        });

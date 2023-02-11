@@ -22,25 +22,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rViewUsuario"
-        android:layout_width="355dp"
-        android:layout_height="337dp"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:layout_width="311dp"
+        android:layout_height="492dp"
+        android:layout_marginBottom="63dp"
+        app:layout_constraintBottom_toTopOf="@+id/segunda"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <Button
-        android:id="@+id/salir"
-        android:layout_width="264dp"
-        android:layout_height="39dp"
-        android:text="Salir de la app"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.523"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
-        app:layout_constraintVertical_bias="0.732" />
 
     <Button
         android:id="@+id/segunda"
@@ -49,39 +37,9 @@
         android:text="Añadir contacto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
-        app:layout_constraintVertical_bias="0.522" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="333dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="73dp"
-        android:layout_marginBottom="53dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/segunda"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="257dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginBottom="56dp"
-        android:background="@color/black"
-        android:padding="10sp"
-        android:text="Seleccione color de fondo:"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rViewUsuario"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.492" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

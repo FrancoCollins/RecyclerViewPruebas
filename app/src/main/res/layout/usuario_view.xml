@@ -52,13 +52,13 @@
             <Button
                 android:id="@+id/btnEditarUsuario"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="0dp"
+                android:layout_width="3dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:text="Editar contacto"
+                android:text="Editar"
                 android:textColor="@color/purple_500"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 card_view:icon="@android:drawable/ic_menu_edit"
                 card_view:iconTint="#000000" />
 
@@ -69,9 +69,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:text="Eliminar contacto"
+                android:text="Eliminar"
                 android:textColor="@color/purple_500"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 card_view:icon="@android:drawable/ic_menu_delete"
                 card_view:iconTint="#000000" />
         </LinearLayout>

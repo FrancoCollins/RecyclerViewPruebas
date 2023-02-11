@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--
+        Dentro de este fichero podemos encontrar lo siguiente
+
+        <menu>: Representa al menú concreto, actuando como padre de la jerarquía.
+        Puede contener elementos <item> y <group>
+        <item>: Representa un ítem del menú. Puede contener un elemento <menú> para
+        generar un submenú.
+        <group>: Representa un grupo de ítems. Es útil si deseas aplicar las mismas
+        características a un conjunto de ítems.
+
+        Los items tendran que tener el valor id para poder acceder a ellos. Podran
+        tener otros como title, icon, etc.
+
+        ShowAsAction es una propiedad que dice como queremos que se comporten los items
+        dentro de la barra del menu.
+
+        ShowAsAction puede tener los siguientes valores
+        1. ifRoom, el ítem se mostrará en la barra solo si hay espacio para proyectarlo.
+        2. always, el item se mostrara en la barra siempre
+        3. never, el item nunca se mostrará en la barra, siempre dentro del menu
+    -->
+    <item
+        android:id="@+id/new_contact"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Nuevo contacto"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btn_dropdown"
+        android:icon="@android:drawable/btn_dropdown"
+        android:title="Color de fondo:"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/rojo"
+                android:title="Rojo" />
+            <item
+                android:id="@+id/azul"
+                android:title="Azul" />
+            <item
+                android:id="@+id/verde"
+                android:title="Verde" />
+            <item
+                android:id="@+id/amarillo"
+                android:title="Amarillo" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/salir_menu"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="Salir"
+        app:showAsAction="never" />
+
+</menu>

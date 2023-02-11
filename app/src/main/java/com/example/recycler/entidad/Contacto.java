@@ -16,6 +16,14 @@ public class Contacto implements Serializable {
         }
     }
 
+    public Contacto(String name, String phone) {
+        this.nombre = name;
+        this.telefono = phone;
+        if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
+            this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
+        }
+    }
+
     public int getId() {
         return id;
     }
