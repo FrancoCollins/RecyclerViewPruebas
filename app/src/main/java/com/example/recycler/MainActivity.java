@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private AdaptadorSuperHeroePersonalizado adaptadorUsuario;
     private Button botonSegunda;
     private View mainLayout;
-    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 200;
 
 
     @Override
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
                 // Mostrar un mensaje explicando por qué se necesita el permiso
             }
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 200);
         } else {
             // Ya tienes permiso para acceder a los contactos
         }
@@ -95,11 +94,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         solicitarPermisoContactos();
-        List<Contacto> contactos = BuscadorContactos.getContactos(getContentResolver());
-        for (Contacto contacto : contactos) {
-            contacto.setId(ListaSingleton.getInstance().getListaSuperHeroes().size());
-            ListaSingleton.getInstance().getListaSuperHeroes().add(contacto);
-        }
+        ListaSingleton.getInstance(getContentResolver());
         mainLayout = findViewById(R.id.mainLayout);
 
         reyclerViewUser = findViewById(R.id.rViewUsuario);

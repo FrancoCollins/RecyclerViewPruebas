@@ -171,7 +171,6 @@ public class Formulario extends AppCompatActivity {
                 createNotificationChannel();
                 enviarNotificacion("Datos incompletos", "Por favor rellene el numero del contacto");
             }
-            finish();
         });
         cancelar.setOnClickListener(view -> {
             finish();
