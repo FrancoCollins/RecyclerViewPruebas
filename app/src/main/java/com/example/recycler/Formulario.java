@@ -1,5 +1,6 @@
 package com.example.recycler;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -11,6 +12,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +35,8 @@ public class Formulario extends AppCompatActivity {
     private boolean editar;
     private Spinner spinner;
     private TextView titulo;
+    private View mainLayout;
+
 
     private boolean comprobacionInicial() {
         Contacto contacto = (Contacto) getIntent().getSerializableExtra("SuperHeroe");
@@ -44,12 +49,52 @@ public class Formulario extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_superior, menu);
+        return true;
+    }
+
+    //Con este método detectaremos que opción del menú ha sido pulsada
+    //el parametro MenuItem representa el objeto que fue seleccionado, no puede ser null
+    //En el valor de retorno decimos si queremos procesar el elemento en este metodo o no
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.new_contact) {
+            Intent intent = new Intent(Formulario.this, Formulario.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            return true;
+        } else if (id == R.id.btn_dropdown) {
+            item.setChecked(!item.isChecked());
+            return true;
+        } else if (id == R.id.rojo) {
+            mainLayout.setBackgroundColor(Color.RED);
+            return true;
+        } else if (id == R.id.amarillo) {
+            mainLayout.setBackgroundColor(Color.YELLOW);
+            return true;
+        } else if (id == R.id.azul) {
+            mainLayout.setBackgroundColor(Color.BLUE);
+            return true;
+        } else if (id == R.id.verde) {
+            mainLayout.setBackgroundColor(Color.GREEN);
+            return true;
+        } else if (id == R.id.salir_menu) {
+            System.exit(0);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         spinner = findViewById(R.id.spinner);
+        mainLayout = findViewById(R.id.layout_formulario);
         Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
@@ -119,15 +164,17 @@ public class Formulario extends AppCompatActivity {
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 
                 }
-            }else if (nombre.getText().toString().length() == 0) {
+            } else if (nombre.getText().toString().length() == 0) {
                 createNotificationChannel();
                 enviarNotificacion("Datos incompletos", "Por favor rellene el nombre del contacto");
-            }else if (compania.getText().toString().length() == 0){
+            } else if (compania.getText().toString().length() == 0) {
                 createNotificationChannel();
                 enviarNotificacion("Datos incompletos", "Por favor rellene el numero del contacto");
             }
+            finish();
         });
         cancelar.setOnClickListener(view -> {
+            finish();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         });
