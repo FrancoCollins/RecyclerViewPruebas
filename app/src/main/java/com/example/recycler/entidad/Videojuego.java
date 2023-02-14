@@ -4,21 +4,30 @@ import com.example.recycler.listaSingleton.ListaSingleton;
 
 import java.io.Serializable;
 
-public class Contacto implements Serializable {
+public class Videojuego implements Serializable {
     private int id;
     private String nombre;
-    private String telefono;
+    private String compania;
+    private double nota;
     private int color;
 
-    public Contacto() {
+    public Videojuego() {
         if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
             this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
         }
     }
 
-    public Contacto(String name, String phone) {
+    public Videojuego(String name, String phone) {
         this.nombre = name;
-        this.telefono = phone;
+        this.compania = phone;
+        if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
+            this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
+        }
+    }
+    public Videojuego(String name, String phone, int nota) {
+        this.nombre = name;
+        this.compania = phone;
+        this.nota = nota;
         if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
             this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
         }
@@ -41,12 +50,12 @@ public class Contacto implements Serializable {
     }
 
 
-    public String getTelefono() {
-        return telefono;
+    public String getCompania() {
+        return compania;
     }
 
-    public void setTelefono(String fechaNacimiento) {
-        this.telefono = fechaNacimiento;
+    public void setCompania(String fechaNacimiento) {
+        this.compania = fechaNacimiento;
     }
 
     @Override
@@ -54,7 +63,7 @@ public class Contacto implements Serializable {
         return "Usuario{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", fechaNacimiento='" + telefono + '\'' +
+                ", fechaNacimiento='" + compania + '\'' +
                 '}';
     }
 
@@ -64,5 +73,13 @@ public class Contacto implements Serializable {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public double getNota() {
+        return nota;
+    }
+
+    public void setNota(double nota) {
+        this.nota = nota;
     }
 }

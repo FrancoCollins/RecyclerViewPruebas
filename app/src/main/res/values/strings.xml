@@ -3,9 +3,10 @@
     <string name="app_name2">dropDownMenuExample</string>
     <string name="nombre">NOMBRE</string>
     <string name="telefono">telefono</string>
-    <string name="editar_contacto">Editar contacto</string>
+    <string name="editar_contacto">Editar videojuego</string>
     <string name="tel_fono">Teléfono</string>
-    <string name="crear_usuario">Crear usuario</string>
+    <string name="crear_usuario">Crear videojuego</string>
+    <string name="precio">precio</string>
     <string-array name="languages">
         <item>ROJO</item>
         <item>AZUL</item>

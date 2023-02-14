@@ -8,10 +8,12 @@ import androidx.core.app.NotificationManagerCompat;
 import android.app.ActivityOptions;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +24,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.recycler.entidad.Contacto;
+import com.example.recycler.entidad.Videojuego;
+import com.example.recycler.gestor.GestorVideojuego;
 import com.example.recycler.listaSingleton.ListaSingleton;
+import com.example.recycler.servicio.GoRestVideojuegoApiService;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Formulario extends AppCompatActivity {
 
@@ -31,15 +41,15 @@ public class Formulario extends AppCompatActivity {
     private EditText compania;
     private Button aceptar;
     private Button cancelar;
-    private Contacto contacto;
+    private Videojuego contacto;
     private boolean editar;
     private Spinner spinner;
     private TextView titulo;
     private View mainLayout;
-
+    private ProgressDialog mDefaultDialog;
 
     private boolean comprobacionInicial() {
-        Contacto contacto = (Contacto) getIntent().getSerializableExtra("SuperHeroe");
+        Videojuego contacto = (Videojuego) getIntent().getSerializableExtra("SuperHeroe");
         if (contacto == null) {
             titulo = findViewById(R.id.textView);
             titulo.setText(R.string.crear_usuario);
@@ -117,13 +127,14 @@ public class Formulario extends AppCompatActivity {
         editar = comprobacionInicial();
         if (editar) {
             nombre.setText(contacto.getNombre());
-            compania.setText(contacto.getTelefono());
+            compania.setText(contacto.getCompania());
         }
 
         aceptar.setOnClickListener(view -> {
             if (nombre.getText().toString().length() > 0 && compania.getText().toString().length() > 0) {
                 if (editar) {
-                    contacto.setTelefono(String.valueOf(compania.getText()));
+                    System.out.println(contacto.getId() + "------------------------------------");
+                    contacto.setCompania(String.valueOf(compania.getText()));
                     contacto.setNombre(String.valueOf(nombre.getText()));
                     switch (spinner.getSelectedItem().toString()) {
                         case "ROJO":
@@ -139,10 +150,11 @@ public class Formulario extends AppCompatActivity {
                             contacto.setColor(Color.YELLOW);
                             break;
                     }
+                    modificarVideojuegoREst(contacto);
                 } else {
-                    contacto = new Contacto();
+                    contacto = new Videojuego();
                     contacto.setNombre(String.valueOf(nombre.getText()));
-                    contacto.setTelefono(String.valueOf(compania.getText()));
+                    contacto.setCompania(String.valueOf(compania.getText()));
                     switch (spinner.getSelectedItem().toString()) {
                         case "ROJO":
                             contacto.setColor(Color.RED);
@@ -158,6 +170,7 @@ public class Formulario extends AppCompatActivity {
                             break;
                     }
                     ListaSingleton.getInstance().getListaSuperHeroes().add(contacto);
+                    agregarVideojuegoREst(contacto);
                     createNotificationChannel();
                     enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
                     Intent intent = new Intent(this, MainActivity.class);
@@ -206,6 +219,76 @@ public class Formulario extends AppCompatActivity {
         int notificationId = 1;
         //Enviakmos la notificacion
         notificationManagerCompact.notify(notificationId, builder.build());
+    }
+
+    public void modificarVideojuegoREst(Videojuego videojuego) {
+        mostrarEspera();
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+
+        Call<Videojuego> call = goRestUsuarioApiService.modificarVideojuego(String.valueOf(contacto.getId()), contacto);
+        call.enqueue(new Callback<Videojuego>() {
+            @Override
+            public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
+                if (response.isSuccessful()) {
+                    Videojuego p = response.body();
+                    for (Videojuego juego : ListaSingleton.getInstance().getListaSuperHeroes()) {
+                        if (juego.getId() == p.getId()) {
+                            ListaSingleton.getInstance().borrar(juego);
+                            ListaSingleton.getInstance().getListaSuperHeroes().add(p);
+                        }
+                    }
+                    System.out.println(p);
+                } else {
+                    Log.d("MAL", "ESTAMOS MAL");
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call<Videojuego> call, Throwable t) {
+                cancelarEspera();
+            }
+        });
+    }
+
+    public void agregarVideojuegoREst(Videojuego videojuego) {
+        mostrarEspera();
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+        Call<Videojuego> call = goRestUsuarioApiService.crearVideojuego(videojuego);
+        call.enqueue(new Callback<Videojuego>() {
+            @Override
+            public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
+                if (response.isSuccessful()) {
+                    Videojuego p = response.body();
+                    System.out.println(p);
+                } else {
+                    Log.d("MAL", "ESTAMOS MAL");
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call<Videojuego> call, Throwable t) {
+                cancelarEspera();
+            }
+        });
+    }
+
+    public void mostrarEspera() {
+        mDefaultDialog = new ProgressDialog(this);
+        // El valor predeterminado es la forma de círculos pequeños
+        mDefaultDialog.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
+        mDefaultDialog.setMessage("Espere, estamos llevando a cabo su solicitud...");
+        mDefaultDialog.setCanceledOnTouchOutside(false);// Por defecto true
+        mDefaultDialog.show();
+    }
+
+    public void cancelarEspera() {
+        mDefaultDialog.cancel();
     }
 
 }

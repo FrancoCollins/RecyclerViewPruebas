@@ -9,33 +9,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.recycler.adaptadores.AdaptadorSuperHeroePersonalizado;
-import com.example.recycler.entidad.BuscadorContactos;
-import com.example.recycler.entidad.Contacto;
+import com.example.recycler.entidad.Videojuego;
+import com.example.recycler.gestor.GestorVideojuego;
 import com.example.recycler.listaSingleton.ListaSingleton;
+import com.example.recycler.servicio.GoRestVideojuegoApiService;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView reyclerViewUser;
     private AdaptadorSuperHeroePersonalizado adaptadorUsuario;
     private Button botonSegunda;
+    private Button refrescar;
     private View mainLayout;
+    private ProgressDialog mDefaultDialog;
 
 
     @Override
@@ -77,28 +82,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void solicitarPermisoContactos() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
-                // Mostrar un mensaje explicando por qué se necesita el permiso
-            }
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 200);
-        } else {
-            // Ya tienes permiso para acceder a los contactos
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        solicitarPermisoContactos();
         ListaSingleton.getInstance(getContentResolver());
+        GestorVideojuego.getInstance().inicializar();
         mainLayout = findViewById(R.id.mainLayout);
-
         reyclerViewUser = findViewById(R.id.rViewUsuario);
         botonSegunda = findViewById((R.id.segunda));
+        refrescar = findViewById(R.id.refrescar);
 
         // Esta línea mejora el rendimiento, si sabemos que el contenido
         // no va a afectar al tamaño del RecyclerView
@@ -108,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
         reyclerViewUser.setLayoutManager(new LinearLayoutManager(this));
 
         // Asociamos un adapter (ver más adelante cómo definirlo)
-        List<Contacto> listaSuperHeroes = ListaSingleton.getInstance().getListaSuperHeroes();
-        adaptadorUsuario = new AdaptadorSuperHeroePersonalizado(listaSuperHeroes);
+        List<Videojuego> listaVideojuegos = ListaSingleton.getInstance().getListaSuperHeroes();
+        adaptadorUsuario = new AdaptadorSuperHeroePersonalizado(listaVideojuegos);
         Context context = getApplicationContext();
         adaptadorUsuario.setContext(context);
         reyclerViewUser.setAdapter(adaptadorUsuario);
@@ -128,5 +122,59 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         reyclerViewUser.getAdapter().notifyDataSetChanged();
+        refrescar.setOnClickListener(view -> {
+            obtenerListaUsuariosRest();
+            finish();
+            startActivity(getIntent());
+        });
+    }
+
+
+    public void obtenerListaUsuariosRest() {
+        mostrarEspera();
+
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+        Call<List<Videojuego>> call = goRestUsuarioApiService.getVideojuegos();
+
+        call.enqueue(new Callback<List<Videojuego>>() {
+
+            @Override
+            public void onResponse(Call<List<Videojuego>> call, Response<List<Videojuego>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Success", "Datos traidos del servicio");
+                    //Gracias a Gson, me convierte los json a objetos Usuario
+                    List<Videojuego> listaUsuarios = response.body();
+                    for (Videojuego videojuego : listaUsuarios) {
+                        System.out.println(videojuego.getNombre().toString());
+                        ListaSingleton.getInstance().getListaSuperHeroes().add(videojuego);
+                    }
+                } else {
+                    Log.d("Error", response.code() + " " + response.message());
+                    return;
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("Error", t.toString());
+                cancelarEspera();
+            }
+        });
+    }
+
+    public void mostrarEspera() {
+        mDefaultDialog = new ProgressDialog(this);
+        // El valor predeterminado es la forma de círculos pequeños
+        mDefaultDialog.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
+        mDefaultDialog.setMessage("Solicitando datos ...");
+        mDefaultDialog.setCanceledOnTouchOutside(false);// Por defecto true
+        mDefaultDialog.show();
+    }
+
+    public void cancelarEspera() {
+        mDefaultDialog.cancel();
     }
 }

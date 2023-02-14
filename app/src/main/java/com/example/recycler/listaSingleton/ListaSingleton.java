@@ -1,20 +1,21 @@
 package com.example.recycler.listaSingleton;
 
-import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 
-import com.example.recycler.entidad.BuscadorContactos;
-import com.example.recycler.entidad.Contacto;
+import com.example.recycler.entidad.Videojuego;
+import com.example.recycler.gestor.GestorVideojuego;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListaSingleton {
 
     private static ListaSingleton instance;
-    private List<Contacto> listaSuperHeroes;
+    private List<Videojuego> listaSuperHeroes;
     public ContentResolver contentResolver;
 
     private ListaSingleton() {
@@ -25,33 +26,40 @@ public class ListaSingleton {
     public static ListaSingleton getInstance() {
         if (instance == null) {
             instance = new ListaSingleton();
+            Call<List<Videojuego>> aux = GestorVideojuego.getInstance().getGoRestUserApiService().getVideojuegos();
+            aux.enqueue(new Callback<List<Videojuego>>() {
+                @Override
+                public void onResponse(Call<List<Videojuego>> call, Response<List<Videojuego>> response) {
+                    List<Videojuego> aux = response.body();
+                    for (Videojuego juego : aux) {
+                        ListaSingleton.getInstance().getListaSuperHeroes().add(juego);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Videojuego>> call, Throwable t) {
+
+                }
+            });
 
         }
         return instance;
     }
+
     public static ListaSingleton getInstance(ContentResolver contentResolver) {
         if (instance == null) {
             instance = new ListaSingleton();
-            instance.cargarContactos(contentResolver);
 
         }
         return instance;
     }
 
-    public void cargarContactos(ContentResolver contentResolver) {
-        List<Contacto> contactos = BuscadorContactos.getContactos(contentResolver);
-        for (Contacto contacto : contactos) {
-            contacto.setId(ListaSingleton.getInstance().getListaSuperHeroes().size());
-            ListaSingleton.getInstance().getListaSuperHeroes().add(contacto);
-        }
-    }
 
-
-    public List<Contacto> getListaSuperHeroes() {
+    public List<Videojuego> getListaSuperHeroes() {
         return listaSuperHeroes;
     }
 
-    public void borrar(Contacto contacto) {
+    public void borrar(Videojuego contacto) {
         listaSuperHeroes.remove(contacto);
     }
 }

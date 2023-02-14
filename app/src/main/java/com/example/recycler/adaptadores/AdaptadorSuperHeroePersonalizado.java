@@ -1,7 +1,9 @@
 package com.example.recycler.adaptadores;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,33 +15,40 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recycler.Formulario;
 import com.example.recycler.R;
-import com.example.recycler.entidad.Contacto;
+import com.example.recycler.entidad.Videojuego;
 
+import com.example.recycler.gestor.GestorVideojuego;
 import com.example.recycler.listaSingleton.ListaSingleton;
+import com.example.recycler.servicio.GoRestVideojuegoApiService;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<AdaptadorSuperHeroePersonalizado.ViewHolder> {
 
-   private List<Contacto> listaContacto;
-   public static Context context;
+    private List<Videojuego> listaVideojuego;
+    public static Context context;
+    private ProgressDialog mDefaultDialog;
 
-   public AdaptadorSuperHeroePersonalizado(List<Contacto> listaContacto) {
-       this.listaContacto = listaContacto;
-   }
+    public AdaptadorSuperHeroePersonalizado(List<Videojuego> listaVideojuego) {
+        this.listaVideojuego = listaVideojuego;
+    }
 
     public void setContext(Context mainActivityClass) {
-       this.context = mainActivityClass;
+        this.context = mainActivityClass;
 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-       private TextView id;
-       private TextView nombre;
-       private TextView compania;
-       private Button botonEditar;
-       private Button botonEliminar;
-       private LinearLayout background;
+        private TextView id;
+        private TextView nombre;
+        private TextView compania;
+        private Button botonEditar;
+        private Button botonEliminar;
+        private LinearLayout background;
 
         public ViewHolder(View v) {
             super(v);
@@ -53,39 +62,80 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
         }
     }
 
-   //será quien devuelva el ViewHolder con el layout seteado que previamente definimos
-   @Override
-   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.usuario_view, parent, false);
-       ViewHolder viewHolder = new ViewHolder(v);
-       return viewHolder;
-   }
+    //será quien devuelva el ViewHolder con el layout seteado que previamente definimos
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.usuario_view, parent, false);
+        ViewHolder viewHolder = new ViewHolder(v);
+        return viewHolder;
+    }
 
-   //será quien se encargue de establecer los objetos en el ViewHolder
-   @Override
-   public void onBindViewHolder(ViewHolder holder, int position) {
-       String sId = String.valueOf(listaContacto.get(position).getId());
-       holder.id.setText(sId);
-       holder.nombre.setText(listaContacto.get(position).getNombre());
-       holder.compania.setText(listaContacto.get(position).getTelefono());
-       holder.background.setBackgroundColor(listaContacto.get(position).getColor());
+    //será quien se encargue de establecer los objetos en el ViewHolder
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String sId = String.valueOf(listaVideojuego.get(position).getId());
+        holder.id.setText(sId);
+        holder.nombre.setText(listaVideojuego.get(position).getNombre());
+        holder.compania.setText(listaVideojuego.get(position).getCompania());
+        holder.background.setBackgroundColor(listaVideojuego.get(position).getColor());
 
-       holder.botonEditar.setOnClickListener(view -> {
-           Intent intent = new Intent(context, Formulario.class);
-           intent.putExtra("SuperHeroe",ListaSingleton.getInstance().getListaSuperHeroes().get(position));
-           context.startActivity(intent);
-       });
+        holder.botonEditar.setOnClickListener(view -> {
+            Intent intent = new Intent(context, Formulario.class);
+            intent.putExtra("SuperHeroe", ListaSingleton.getInstance().getListaSuperHeroes().get(position));
+            context.startActivity(intent);
+        });
 
-       holder.botonEliminar.setOnClickListener(view -> {
-           ListaSingleton.getInstance().borrar(listaContacto.get(position));
-           notifyDataSetChanged();
-       });
-   }
+        holder.botonEliminar.setOnClickListener(view -> {
+            ListaSingleton.getInstance().borrar(listaVideojuego.get(position));
+            borrarVideojuegoRest(listaVideojuego.get(position).getId());
+            notifyDataSetChanged();
+        });
+    }
 
-   //será quien devuelva la cantidad de items que se encuentra en la lista
-   @Override
-   public int getItemCount() {
-       return listaContacto.size();
-   }
+    public void borrarVideojuegoRest(int id) {
+        mostrarEspera();
+
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+        Call<Videojuego> call = goRestUsuarioApiService.borrarVideojuego(id);
+
+        call.enqueue(new Callback<Videojuego>() {
+            @Override
+            public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
+                if (response.isSuccessful()) {
+                    Videojuego p = response.body();
+                    System.out.println(p);
+                } else {
+                    Log.d("MAL", "ESTAMOS MAL");
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call<Videojuego> call, Throwable t) {
+                cancelarEspera();
+            }
+        });
+    }
+
+    public void mostrarEspera() {
+        mDefaultDialog = new ProgressDialog(context);
+        // El valor predeterminado es la forma de círculos pequeños
+        mDefaultDialog.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
+        mDefaultDialog.setMessage("Espere, estamos llevando a cabo su solicitud...");
+        mDefaultDialog.setCanceledOnTouchOutside(false);// Por defecto true
+        mDefaultDialog.show();
+    }
+
+    public void cancelarEspera() {
+        mDefaultDialog.cancel();
+    }
+
+    //será quien devuelva la cantidad de items que se encuentra en la lista
+    @Override
+    public int getItemCount() {
+        return listaVideojuego.size();
+    }
 
 }
