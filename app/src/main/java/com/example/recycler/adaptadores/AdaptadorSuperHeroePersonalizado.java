@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recycler.Formulario;
+import com.example.recycler.MainActivity;
 import com.example.recycler.R;
 import com.example.recycler.entidad.Videojuego;
 
@@ -81,14 +82,19 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
 
         holder.botonEditar.setOnClickListener(view -> {
             Intent intent = new Intent(context, Formulario.class);
+            System.out.println(sId + "-------------------------------------------------");
             intent.putExtra("SuperHeroe", ListaSingleton.getInstance().getListaSuperHeroes().get(position));
+            System.out.println(ListaSingleton.getInstance().getListaSuperHeroes().get(position).getId() + "-------------------------------------");
             context.startActivity(intent);
+
         });
 
         holder.botonEliminar.setOnClickListener(view -> {
-            ListaSingleton.getInstance().borrar(listaVideojuego.get(position));
-            borrarVideojuegoRest(listaVideojuego.get(position).getId());
+            Intent intent = new Intent(context, MainActivity.class);
+            borrarVideojuegoRest(Integer.parseInt(holder.id.getText().toString()));
             notifyDataSetChanged();
+            context.startActivity(intent);
+
         });
     }
 
@@ -105,6 +111,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
             public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
                 if (response.isSuccessful()) {
                     Videojuego p = response.body();
+                    ListaSingleton.getInstance().borrar(p);
                     System.out.println(p);
                 } else {
                     Log.d("MAL", "ESTAMOS MAL");
@@ -114,6 +121,42 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
 
             @Override
             public void onFailure(Call<Videojuego> call, Throwable t) {
+                cancelarEspera();
+            }
+        });
+        obtenerListaUsuariosRest();
+    }
+    public void obtenerListaUsuariosRest() {
+        mostrarEspera();
+
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+        Call<List<Videojuego>> call = goRestUsuarioApiService.getVideojuegos();
+
+        call.enqueue(new Callback<List<Videojuego>>() {
+
+            @Override
+            public void onResponse(Call<List<Videojuego>> call, Response<List<Videojuego>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Success", "Datos traidos del servicio");
+                    //Gracias a Gson, me convierte los json a objetos Usuario
+                    List<Videojuego> listaUsuarios = response.body();
+                    ListaSingleton.getInstance().getListaSuperHeroes().clear();
+                    for (Videojuego videojuego : listaUsuarios) {
+                        System.out.println(videojuego.getNombre().toString());
+                        ListaSingleton.getInstance().getListaSuperHeroes().add(videojuego);
+                    }
+                } else {
+                    Log.d("Error", response.code() + " " + response.message());
+                    return;
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("Error", t.toString());
                 cancelarEspera();
             }
         });

@@ -151,6 +151,9 @@ public class Formulario extends AppCompatActivity {
                             break;
                     }
                     modificarVideojuegoREst(contacto);
+                    createNotificationChannel();
+                    enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
+                    finish();
                 } else {
                     contacto = new Videojuego();
                     contacto.setNombre(String.valueOf(nombre.getText()));
@@ -169,13 +172,10 @@ public class Formulario extends AppCompatActivity {
                             contacto.setColor(Color.YELLOW);
                             break;
                     }
-                    ListaSingleton.getInstance().getListaSuperHeroes().add(contacto);
                     agregarVideojuegoREst(contacto);
                     createNotificationChannel();
                     enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-
+                    finish();
                 }
             } else if (nombre.getText().toString().length() == 0) {
                 createNotificationChannel();
@@ -187,8 +187,6 @@ public class Formulario extends AppCompatActivity {
         });
         cancelar.setOnClickListener(view -> {
             finish();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         });
     }
 
@@ -227,7 +225,7 @@ public class Formulario extends AppCompatActivity {
                 GestorVideojuego.getInstance().getGoRestUserApiService();
 
 
-        Call<Videojuego> call = goRestUsuarioApiService.modificarVideojuego(String.valueOf(contacto.getId()), contacto);
+        Call<Videojuego> call = goRestUsuarioApiService.modificarVideojuego(String.valueOf(videojuego.getId()), videojuego);
         call.enqueue(new Callback<Videojuego>() {
             @Override
             public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
@@ -239,7 +237,6 @@ public class Formulario extends AppCompatActivity {
                             ListaSingleton.getInstance().getListaSuperHeroes().add(p);
                         }
                     }
-                    System.out.println(p);
                 } else {
                     Log.d("MAL", "ESTAMOS MAL");
                 }
@@ -251,6 +248,7 @@ public class Formulario extends AppCompatActivity {
                 cancelarEspera();
             }
         });
+        obtenerListaUsuariosRest();
     }
 
     public void agregarVideojuegoREst(Videojuego videojuego) {
@@ -264,15 +262,17 @@ public class Formulario extends AppCompatActivity {
             public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
                 if (response.isSuccessful()) {
                     Videojuego p = response.body();
-                    System.out.println(p);
+                    ListaSingleton.getInstance().getListaSuperHeroes().add(p);
+                    System.out.println(p.getId() + "-----------------------------");
                 } else {
-                    Log.d("MAL", "ESTAMOS MAL");
+                    Log.d("MAL", "ESTAMOS MAL---------------------------");
                 }
                 cancelarEspera();
             }
 
             @Override
             public void onFailure(Call<Videojuego> call, Throwable t) {
+                System.out.println("ERROOOORRRRRR");
                 cancelarEspera();
             }
         });
@@ -289,6 +289,42 @@ public class Formulario extends AppCompatActivity {
 
     public void cancelarEspera() {
         mDefaultDialog.cancel();
+    }
+
+    public void obtenerListaUsuariosRest() {
+        mostrarEspera();
+
+        GoRestVideojuegoApiService goRestUsuarioApiService =
+                GestorVideojuego.getInstance().getGoRestUserApiService();
+
+        Call<List<Videojuego>> call = goRestUsuarioApiService.getVideojuegos();
+
+        call.enqueue(new Callback<List<Videojuego>>() {
+
+            @Override
+            public void onResponse(Call<List<Videojuego>> call, Response<List<Videojuego>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Success", "Datos traidos del servicio");
+                    //Gracias a Gson, me convierte los json a objetos Usuario
+                    List<Videojuego> listaUsuarios = response.body();
+                    ListaSingleton.getInstance().getListaSuperHeroes().clear();
+                    for (Videojuego videojuego : listaUsuarios) {
+                        System.out.println(videojuego.getNombre().toString());
+                        ListaSingleton.getInstance().getListaSuperHeroes().add(videojuego);
+                    }
+                } else {
+                    Log.d("Error", response.code() + " " + response.message());
+                    return;
+                }
+                cancelarEspera();
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("Error", t.toString());
+                cancelarEspera();
+            }
+        });
     }
 
 }

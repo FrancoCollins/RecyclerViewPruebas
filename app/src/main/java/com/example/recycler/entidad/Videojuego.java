@@ -12,9 +12,6 @@ public class Videojuego implements Serializable {
     private int color;
 
     public Videojuego() {
-        if (ListaSingleton.getInstance().getListaSuperHeroes() != null) {
-            this.id = ListaSingleton.getInstance().getListaSuperHeroes().size();
-        }
     }
 
     public Videojuego(String name, String phone) {

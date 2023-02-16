@@ -28,6 +28,7 @@ import com.example.recycler.listaSingleton.ListaSingleton;
 import com.example.recycler.servicio.GoRestVideojuegoApiService;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ListaSingleton.getInstance(getContentResolver());
         GestorVideojuego.getInstance().inicializar();
+        obtenerListaUsuariosRest();
         mainLayout = findViewById(R.id.mainLayout);
         reyclerViewUser = findViewById(R.id.rViewUsuario);
         botonSegunda = findViewById((R.id.segunda));
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         botonSegunda.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, Formulario.class);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-            finish();
         });
 
 
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         refrescar.setOnClickListener(view -> {
             obtenerListaUsuariosRest();
             finish();
-            startActivity(getIntent());
+            startActivity(getIntent(), ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         });
     }
 
@@ -146,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Success", "Datos traidos del servicio");
                     //Gracias a Gson, me convierte los json a objetos Usuario
                     List<Videojuego> listaUsuarios = response.body();
+                    ListaSingleton.getInstance().getListaSuperHeroes().clear();
                     for (Videojuego videojuego : listaUsuarios) {
-                        System.out.println(videojuego.getNombre().toString());
+                        Log.d("VIDEO", videojuego.getNombre());
                         ListaSingleton.getInstance().getListaSuperHeroes().add(videojuego);
                     }
                 } else {
