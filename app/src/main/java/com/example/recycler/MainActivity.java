@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.new_contact) {
             Intent intent = new Intent(MainActivity.this, Formulario.class);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            finish();
             return true;
         } else if (id == R.id.btn_dropdown) {
             item.setChecked(!item.isChecked());
@@ -88,9 +89,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListaSingleton.getInstance(getContentResolver());
         GestorVideojuego.getInstance().inicializar();
-        obtenerListaUsuariosRest();
+        ListaSingleton.getInstance();
         mainLayout = findViewById(R.id.mainLayout);
         reyclerViewUser = findViewById(R.id.rViewUsuario);
         botonSegunda = findViewById((R.id.segunda));
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -130,6 +131,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 
     public void obtenerListaUsuariosRest() {
         mostrarEspera();
@@ -152,11 +158,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("VIDEO", videojuego.getNombre());
                         ListaSingleton.getInstance().getListaSuperHeroes().add(videojuego);
                     }
+                    Log.d("FIN", "fin obtener for");
                 } else {
                     Log.d("Error", response.code() + " " + response.message());
                     return;
                 }
                 cancelarEspera();
+                Log.d("FIN", "fin obtener lista");
             }
 
             @Override

@@ -94,7 +94,6 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
             borrarVideojuegoRest(Integer.parseInt(holder.id.getText().toString()));
             notifyDataSetChanged();
             context.startActivity(intent);
-
         });
     }
 

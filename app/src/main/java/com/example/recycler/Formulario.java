@@ -150,10 +150,13 @@ public class Formulario extends AppCompatActivity {
                             contacto.setColor(Color.YELLOW);
                             break;
                     }
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     modificarVideojuegoREst(contacto);
                     createNotificationChannel();
                     enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
                     finish();
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+
                 } else {
                     contacto = new Videojuego();
                     contacto.setNombre(String.valueOf(nombre.getText()));
@@ -172,10 +175,12 @@ public class Formulario extends AppCompatActivity {
                             contacto.setColor(Color.YELLOW);
                             break;
                     }
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     agregarVideojuegoREst(contacto);
                     createNotificationChannel();
                     enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
                     finish();
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 }
             } else if (nombre.getText().toString().length() == 0) {
                 createNotificationChannel();

@@ -1,6 +1,7 @@
 package com.example.recycler.listaSingleton;
 
 import android.content.ContentResolver;
+import android.util.Log;
 
 import com.example.recycler.entidad.Videojuego;
 import com.example.recycler.gestor.GestorVideojuego;
@@ -16,7 +17,7 @@ public class ListaSingleton {
 
     private static ListaSingleton instance;
     private List<Videojuego> listaSuperHeroes;
-    public ContentResolver contentResolver;
+    public static ContentResolver contentResolver;
 
     private ListaSingleton() {
         super();
@@ -27,6 +28,7 @@ public class ListaSingleton {
         if (instance == null) {
             instance = new ListaSingleton();
             Call<List<Videojuego>> aux = GestorVideojuego.getInstance().getGoRestUserApiService().getVideojuegos();
+            Log.d("CALL","CALL COMENZADA");
             aux.enqueue(new Callback<List<Videojuego>>() {
                 @Override
                 public void onResponse(Call<List<Videojuego>> call, Response<List<Videojuego>> response) {
@@ -46,13 +48,6 @@ public class ListaSingleton {
         return instance;
     }
 
-    public static ListaSingleton getInstance(ContentResolver contentResolver) {
-        if (instance == null) {
-            instance = new ListaSingleton();
-
-        }
-        return instance;
-    }
 
 
     public List<Videojuego> getListaSuperHeroes() {
