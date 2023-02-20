@@ -39,6 +39,7 @@ public class Formulario extends AppCompatActivity {
 
     private EditText nombre;
     private EditText compania;
+    private EditText nota;
     private Button aceptar;
     private Button cancelar;
     private Videojuego contacto;
@@ -104,6 +105,7 @@ public class Formulario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         spinner = findViewById(R.id.spinner);
+        nota = findViewById(R.id.nota_formulario);
         mainLayout = findViewById(R.id.layout_formulario);
         Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
@@ -136,6 +138,7 @@ public class Formulario extends AppCompatActivity {
                     System.out.println(contacto.getId() + "------------------------------------");
                     contacto.setCompania(String.valueOf(compania.getText()));
                     contacto.setNombre(String.valueOf(nombre.getText()));
+                    contacto.setNota(Double.parseDouble(String.valueOf(nota.getText())));
                     switch (spinner.getSelectedItem().toString()) {
                         case "ROJO":
                             contacto.setColor(Color.RED);
@@ -161,6 +164,7 @@ public class Formulario extends AppCompatActivity {
                     contacto = new Videojuego();
                     contacto.setNombre(String.valueOf(nombre.getText()));
                     contacto.setCompania(String.valueOf(compania.getText()));
+                    contacto.setNota(Double.parseDouble(String.valueOf(nota.getText())));
                     switch (spinner.getSelectedItem().toString()) {
                         case "ROJO":
                             contacto.setColor(Color.RED);

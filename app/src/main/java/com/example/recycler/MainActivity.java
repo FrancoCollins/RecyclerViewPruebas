@@ -1,18 +1,12 @@
 package com.example.recycler;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,16 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
 import com.example.recycler.adaptadores.AdaptadorSuperHeroePersonalizado;
 import com.example.recycler.entidad.Videojuego;
 import com.example.recycler.gestor.GestorVideojuego;
 import com.example.recycler.listaSingleton.ListaSingleton;
 import com.example.recycler.servicio.GoRestVideojuegoApiService;
-
 import java.util.List;
-import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -185,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cancelarEspera() {
+        mDefaultDialog.dismiss();
         mDefaultDialog.cancel();
     }
 }

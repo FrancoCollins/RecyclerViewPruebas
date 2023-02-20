@@ -47,6 +47,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
         private TextView id;
         private TextView nombre;
         private TextView compania;
+        private TextView precio;
         private Button botonEditar;
         private Button botonEliminar;
         private LinearLayout background;
@@ -57,6 +58,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
             id = v.findViewById(R.id.idUsuario);
             nombre = v.findViewById(R.id.nombreUsuario);
             compania = v.findViewById(R.id.companiaUsuario);
+            precio = v.findViewById(R.id.precio);
             botonEditar = v.findViewById(R.id.btnEditarUsuario);
             botonEliminar = v.findViewById(R.id.btnEliminarUsuario);
             background = v.findViewById(R.id.linearLayout);
@@ -78,6 +80,7 @@ public class AdaptadorSuperHeroePersonalizado extends RecyclerView.Adapter<Adapt
         holder.id.setText(sId);
         holder.nombre.setText(listaVideojuego.get(position).getNombre());
         holder.compania.setText(listaVideojuego.get(position).getCompania());
+        holder.precio.setText(String.valueOf(listaVideojuego.get(position).getNota()));
         holder.background.setBackgroundColor(listaVideojuego.get(position).getColor());
 
         holder.botonEditar.setOnClickListener(view -> {

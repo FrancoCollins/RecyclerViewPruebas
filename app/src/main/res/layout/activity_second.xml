@@ -28,11 +28,11 @@
         android:textColor="@color/design_default_color_primary"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.447"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.376" />
+        app:layout_constraintVertical_bias="0.426" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -45,7 +45,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.511">
+        app:layout_constraintVertical_bias="0.724">
 
         <Button
             android:id="@+id/aceptarFormulario"
@@ -91,6 +91,15 @@
             android:inputType="number"
             android:hint="@string/tel_fono" />
 
+        <EditText
+            android:id="@+id/nota_formulario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Nota"
+            android:inputType="number" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -104,7 +113,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.595">
+        app:layout_constraintVertical_bias="0.508">
 
         <Spinner
             android:id="@+id/spinner"
