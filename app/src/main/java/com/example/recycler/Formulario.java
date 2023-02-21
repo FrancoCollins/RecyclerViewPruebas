@@ -130,6 +130,7 @@ public class Formulario extends AppCompatActivity {
         if (editar) {
             nombre.setText(contacto.getNombre());
             compania.setText(contacto.getCompania());
+            nota.setText(String.valueOf(contacto.getNota()));
         }
 
         aceptar.setOnClickListener(view -> {
@@ -153,13 +154,13 @@ public class Formulario extends AppCompatActivity {
                             contacto.setColor(Color.YELLOW);
                             break;
                     }
+                    System.out.println(contacto.getColor());
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     modificarVideojuegoREst(contacto);
                     createNotificationChannel();
                     enviarNotificacion("Contacto creado exitosamente", "El contacto ha sido dado de alta correctamente");
                     finish();
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-
                 } else {
                     contacto = new Videojuego();
                     contacto.setNombre(String.valueOf(nombre.getText()));
@@ -195,6 +196,8 @@ public class Formulario extends AppCompatActivity {
             }
         });
         cancelar.setOnClickListener(view -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             finish();
         });
     }
@@ -234,27 +237,17 @@ public class Formulario extends AppCompatActivity {
                 GestorVideojuego.getInstance().getGoRestUserApiService();
 
 
-        Call<Videojuego> call = goRestUsuarioApiService.modificarVideojuego(String.valueOf(videojuego.getId()), videojuego);
-        call.enqueue(new Callback<Videojuego>() {
+        Call<Void> call = goRestUsuarioApiService.modificarVideojuego(String.valueOf(videojuego.getId()), videojuego);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Videojuego> call, Response<Videojuego> response) {
-                if (response.isSuccessful()) {
-                    Videojuego p = response.body();
-                    for (Videojuego juego : ListaSingleton.getInstance().getListaSuperHeroes()) {
-                        if (juego.getId() == p.getId()) {
-                            ListaSingleton.getInstance().borrar(juego);
-                            ListaSingleton.getInstance().getListaSuperHeroes().add(p);
-                        }
-                    }
-                } else {
-                    Log.d("MAL", "ESTAMOS MAL");
-                }
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 cancelarEspera();
             }
 
             @Override
-            public void onFailure(Call<Videojuego> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 cancelarEspera();
+                System.out.println(t.getMessage() + "--------------------------");
             }
         });
         obtenerListaUsuariosRest();

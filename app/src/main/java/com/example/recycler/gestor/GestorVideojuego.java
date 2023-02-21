@@ -25,7 +25,7 @@ public class GestorVideojuego {
     public void inicializar(){
         //Tenemos que configurar Retrofit para acceder al servicio
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.34.84.244:9432/")
+                .baseUrl("http://10.34.80.44:9432/")
                 .addConverterFactory(GsonConverterFactory.create(
                         new GsonBuilder().serializeNulls().create()
                 )).build();

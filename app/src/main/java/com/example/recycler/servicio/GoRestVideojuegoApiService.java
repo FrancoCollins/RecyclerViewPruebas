@@ -24,7 +24,7 @@ public interface GoRestVideojuegoApiService {
     Call<Videojuego> crearVideojuego(@Body Videojuego videojuego);
 
     @PUT("videojuegos/{id}")
-    Call<Videojuego> modificarVideojuego(@Path("id") String id, @Body Videojuego videojuego);
+    Call<Void> modificarVideojuego(@Path("id") String id, @Body Videojuego videojuego);
 
 
     @DELETE("videojuegos/{id}")
